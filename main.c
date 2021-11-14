@@ -3,33 +3,34 @@
 #include <string.h>
 #include <unistd.h>
 
-
 char ** parse_args(char *line);
 
 int main(int argc, char *argv[]){
-	int i;
-	int size = 0;
-	char *line;
-	for (i = argc-1; i>=0; i--){
-		size+= strlen(argv[i])+1;
+	if (argc > 1){
+		char **c = parse_args(argv[1]);
+		execvp(c[0], c);
+		free(c);
 	}
-	line = malloc(size);
-	for (i = 0; i<argc-1; i++){
-		char c[strlen(argv[i])];
-		strcpy(c, argv[i]);
-		strcat(line, strcat(c, " "));
-	}
-	strcat(line, argv[i]);
-	parse_args(line);
-	free(line);
 }
 
 char ** parse_args(char *line){
+	int s;
 	int i = 0;
-	char **p;
-	while (line){
-		char *c = strsep(&line, " ");
-		strcpy(p[i], c);
+	for (s = 0; s<strlen(line); s++){
+		if (line[s] == ' '){
+			i++;
+		}
+	}
+	i++;
+	char **p = malloc((i+1)*sizeof(char *));
+	char *l = line;
+	s = i;
+	i = 0;
+	for (s>=0; s--;){
+		char *c = strsep(&l, " ");
+		p[i] = c;
 		i++;
 	}
+	p[i] = NULL;
+	return p;
 }
